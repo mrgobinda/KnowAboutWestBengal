@@ -6,443 +6,302 @@
 <title>West Bengal — Districts & GI Tags</title>
 <link href="https://fonts.googleapis.com/css2?family=Tiro+Devanagari+Bengali&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-/* ── RESET & VARS ─────────────────────────────── */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-:root {
-  --cream:  #f5efe4;
-  --deep:   #1a1008;
-  --ochre:  #c8821a;
-  --rust:   #9b3a1a;
-  --teal:   #1e6b6b;
-  --indigo: #2d3a7a;
-  --rose:   #8b2252;
-  --gold:   #d4a017;
-  --panel:  #fdf7ee;
-  --border: #e0d0b0;
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --cream:#f5efe4;--deep:#1a1008;--ochre:#c8821a;--rust:#9b3a1a;
+  --teal:#1e6b6b;--indigo:#2d3a7a;--rose:#8b2252;--gold:#d4a017;
+  --panel:#fdf7ee;--border:#e0d0b0
 }
-html { scroll-behavior: smooth; }
-body {
-  background: var(--cream);
-  color: var(--deep);
-  font-family: 'Libre Baskerville', Georgia, serif;
-  min-height: 100vh;
+html{scroll-behavior:smooth}
+body{background:var(--cream);color:var(--deep);font-family:'Libre Baskerville',Georgia,serif;min-height:100vh}
+
+header{
+  background:var(--deep);padding:1.1rem 1.6rem;
+  display:flex;flex-wrap:wrap;align-items:baseline;gap:.6rem 1.2rem;
+  border-bottom:3px solid var(--ochre)
+}
+header h1{font-family:'Tiro Devanagari Bengali',serif;font-size:clamp(1.1rem,3vw,1.8rem);color:var(--gold)}
+header span{font-family:'DM Mono',monospace;font-size:.65rem;color:#a89880;letter-spacing:.14em;text-transform:uppercase}
+
+.top{display:flex;align-items:flex-start;width:100%}
+
+.map-col{
+  flex:0 0 auto;width:52%;max-width:560px;
+  padding:1.3rem 1rem 1.3rem 1.4rem;
+  display:flex;flex-direction:column;align-items:flex-start
+}
+.map-hint{
+  font-family:'DM Mono',monospace;font-size:.63rem;letter-spacing:.13em;
+  color:var(--ochre);text-transform:uppercase;margin-bottom:.6rem
 }
 
-/* ── HEADER ──────────────────────────────────── */
-header {
-  background: var(--deep);
-  padding: 1.2rem 1.6rem;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: .8rem 1.4rem;
-  border-bottom: 3px solid var(--ochre);
-}
-header h1 {
-  font-family: 'Tiro Devanagari Bengali', serif;
-  font-size: clamp(1.2rem, 3.5vw, 1.9rem);
-  color: var(--gold);
-  letter-spacing: .02em;
-}
-header span {
-  font-family: 'DM Mono', monospace;
-  font-size: .68rem;
-  color: #a89880;
-  letter-spacing: .14em;
-  text-transform: uppercase;
+.map-wrap{position:relative;width:100%;display:block;line-height:0}
+.map-wrap img{width:100%;height:auto;display:block;cursor:crosshair}
+#hl-canvas{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none}
+
+#tooltip{
+  position:fixed;background:var(--deep);color:var(--gold);
+  font-family:'DM Mono',monospace;font-size:.7rem;letter-spacing:.08em;
+  padding:.32rem .68rem;border-radius:3px;pointer-events:none;z-index:9999;
+  opacity:0;transition:opacity .12s;white-space:nowrap;
+  box-shadow:0 2px 12px rgba(0,0,0,.45)
 }
 
-/* ── TOP SECTION: MAP + PANEL side by side ───── */
-.top-section {
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  gap: 0;
-  width: 100%;
+.panel-col{
+  flex:1 1 0;min-width:0;background:var(--panel);
+  border-left:3px solid var(--ochre);
+  padding:1.4rem 1.2rem;align-self:stretch;min-height:460px
 }
+.placeholder{
+  height:100%;min-height:280px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:.9rem;opacity:.38
+}
+.placeholder svg{width:46px}
+.placeholder p{
+  font-family:'DM Mono',monospace;font-size:.66rem;
+  letter-spacing:.1em;text-align:center;text-transform:uppercase;line-height:1.8
+}
+.d-card{display:none}
+.d-card.on{display:block;animation:fu .26s ease}
+@keyframes fu{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
+.d-badge{
+  display:inline-block;font-family:'DM Mono',monospace;font-size:.57rem;
+  letter-spacing:.15em;text-transform:uppercase;
+  background:var(--deep);color:var(--gold);padding:.17rem .62rem;margin-bottom:.7rem
+}
+.d-name{font-family:'Tiro Devanagari Bengali',serif;font-size:1.45rem;color:var(--rust);line-height:1.2;margin-bottom:.9rem}
+.d-sec{margin-bottom:1rem}
+.d-sec h3{
+  font-family:'DM Mono',monospace;font-size:.58rem;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--ochre);
+  border-bottom:1px solid var(--border);padding-bottom:.26rem;margin-bottom:.5rem
+}
+.hl-list{list-style:none}
+.hl-list li{font-size:.8rem;line-height:1.65;padding-left:.95rem;position:relative;color:#3a2510}
+.hl-list li::before{content:'›';position:absolute;left:0;color:var(--ochre);font-weight:700}
+.gi-stack{display:flex;flex-direction:column;gap:.42rem}
+.gi-pill{display:flex;justify-content:space-between;align-items:center;gap:.4rem;padding:.38rem .62rem;border-radius:3px;color:#f5efe4}
+.gi-pill.v{background:var(--rose)}
+.gi-pill.m{background:var(--indigo)}
+.gi-pill.r{background:var(--teal)}
+.gi-pill.s{background:#5a6a3a;opacity:.75}
+.gi-pill .gn{font-size:.77rem;font-style:italic;flex:1}
+.gi-pill .gy{font-family:'DM Mono',monospace;font-size:.6rem;background:rgba(255,255,255,.17);padding:.07rem .38rem;border-radius:2px;white-space:nowrap;color:#f5d080}
+.no-gi{font-family:'DM Mono',monospace;font-size:.64rem;color:#a08060;letter-spacing:.07em}
 
-/* MAP COLUMN */
-.map-col {
-  flex: 0 0 auto;
-  width: 55%;
-  max-width: 600px;
-  padding: 1.4rem 1.2rem 1.4rem 1.6rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-.map-hint {
-  font-family: 'DM Mono', monospace;
-  font-size: .65rem;
-  letter-spacing: .13em;
-  color: var(--ochre);
-  text-transform: uppercase;
-  margin-bottom: .7rem;
-  align-self: flex-start;
-}
-#wb-map {
-  width: 100%;
-  height: auto;
-  filter: drop-shadow(0 4px 18px rgba(0,0,0,.16));
-  display: block;
-}
-#wb-map .district {
-  stroke: #1a1008;
-  stroke-width: 0.7;
-  cursor: pointer;
-  transition: filter .15s ease, stroke-width .15s ease;
-}
-#wb-map .district:hover { stroke-width: 2; filter: brightness(1.1) drop-shadow(0 2px 6px rgba(0,0,0,.3)); }
-#wb-map .district.active { stroke-width: 2.5; filter: brightness(1.15) drop-shadow(0 3px 10px rgba(0,0,0,.4)); }
-#wb-map text.lbl {
-  font-family: 'DM Mono', monospace;
-  font-size: 5.5px;
-  fill: rgba(10,4,0,.72);
-  pointer-events: none;
-  text-anchor: middle;
-  dominant-baseline: middle;
-}
+hr.div{border:none;border-top:2px solid var(--border)}
 
-/* map legend */
-.map-legend {
-  margin-top: .9rem;
-  display: flex;
-  flex-wrap: wrap;
-  gap: .4rem .9rem;
-  align-self: flex-start;
-}
-.map-legend li {
-  list-style: none;
-  display: flex;
-  align-items: center;
-  gap: .35rem;
-  font-family: 'DM Mono', monospace;
-  font-size: .6rem;
-  letter-spacing: .06em;
-  color: #5a4a30;
-}
-.map-legend .dot {
-  width: 11px; height: 11px;
-  border-radius: 2px;
-  border: 1px solid rgba(0,0,0,.18);
-  flex-shrink: 0;
-}
+.tbl-sec{width:100%;padding:1.6rem 1.5rem 3rem}
+.tbl-sec h2{font-family:'Tiro Devanagari Bengali',serif;font-size:1.15rem;color:var(--rust);margin-bottom:.9rem}
+.tbl-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{border-collapse:collapse;width:100%;min-width:580px;font-size:.78rem}
+thead tr{background:var(--deep);color:var(--gold);font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.1em;text-transform:uppercase}
+th{padding:.62rem .85rem;text-align:left;white-space:nowrap}
+td{padding:.52rem .85rem;border-bottom:1px solid var(--border);vertical-align:top}
+tbody tr{cursor:pointer;transition:background .12s}
+tbody tr:hover{background:#f0e5d0}
+tbody tr.on{background:#ffe8b8}
+td.dn{font-weight:700;color:var(--rust);white-space:nowrap}
+td.gc{font-style:italic;color:var(--teal);font-size:.74rem}
+td.nr{font-family:'DM Mono',monospace;font-size:.64rem;color:#a08060}
 
-/* PANEL COLUMN */
-.panel-col {
-  flex: 1 1 0;
-  min-width: 0;
-  background: var(--panel);
-  border-left: 3px solid var(--ochre);
-  padding: 1.5rem 1.3rem;
-  min-height: 480px;
-  align-self: stretch;
-}
+.gi-legend{display:flex;flex-wrap:wrap;gap:.5rem 1rem;margin-top:1rem}
+.gi-legend li{list-style:none;display:flex;align-items:center;gap:.35rem;font-family:'DM Mono',monospace;font-size:.6rem;color:#5a4030}
+.gi-legend .dot{width:11px;height:11px;border-radius:2px;flex-shrink:0}
 
-/* placeholder */
-.placeholder {
-  height: 100%;
-  min-height: 300px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 1rem;
-  opacity: .4;
+@media(max-width:780px){
+  .top{flex-direction:column}
+  .map-col{width:100%;max-width:100%;padding:1rem .8rem}
+  .panel-col{border-left:none;border-top:3px solid var(--ochre);width:100%;min-height:0}
+  .tbl-sec{padding:1.1rem .9rem 2.5rem}
 }
-.placeholder svg { width: 48px; }
-.placeholder p {
-  font-family: 'DM Mono', monospace;
-  font-size: .68rem;
-  letter-spacing: .1em;
-  text-align: center;
-  text-transform: uppercase;
-  line-height: 1.7;
-}
-
-/* district card */
-.d-card { display: none; }
-.d-card.on { display: block; animation: fadeUp .28s ease; }
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(8px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-.d-badge {
-  display: inline-block;
-  font-family: 'DM Mono', monospace;
-  font-size: .58rem;
-  letter-spacing: .16em;
-  text-transform: uppercase;
-  background: var(--deep);
-  color: var(--gold);
-  padding: .18rem .65rem;
-  margin-bottom: .75rem;
-}
-.d-name {
-  font-family: 'Tiro Devanagari Bengali', serif;
-  font-size: 1.5rem;
-  color: var(--rust);
-  line-height: 1.2;
-  margin-bottom: 1rem;
-}
-.d-sec { margin-bottom: 1.1rem; }
-.d-sec h3 {
-  font-family: 'DM Mono', monospace;
-  font-size: .6rem;
-  letter-spacing: .15em;
-  text-transform: uppercase;
-  color: var(--ochre);
-  border-bottom: 1px solid var(--border);
-  padding-bottom: .28rem;
-  margin-bottom: .55rem;
-}
-.hl-list { list-style: none; }
-.hl-list li {
-  font-size: .82rem;
-  line-height: 1.65;
-  padding-left: 1rem;
-  position: relative;
-  color: #3a2510;
-}
-.hl-list li::before { content: '›'; position: absolute; left: 0; color: var(--ochre); font-weight: 700; }
-.gi-stack { display: flex; flex-direction: column; gap: .45rem; }
-.gi-pill {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: .4rem;
-  padding: .4rem .65rem;
-  border-radius: 3px;
-  color: #f5efe4;
-}
-.gi-pill.v { background: var(--rose); }
-.gi-pill.m { background: var(--indigo); }
-.gi-pill.r { background: var(--teal); }
-.gi-pill.s { background: #5a6a3a; opacity: .75; }
-.gi-pill .gn { font-size: .79rem; font-style: italic; flex: 1; }
-.gi-pill .gy {
-  font-family: 'DM Mono', monospace;
-  font-size: .62rem;
-  background: rgba(255,255,255,.18);
-  padding: .08rem .4rem;
-  border-radius: 2px;
-  white-space: nowrap;
-  color: #f5d080;
-}
-.no-gi {
-  font-family: 'DM Mono', monospace;
-  font-size: .66rem;
-  color: #a08060;
-  letter-spacing: .07em;
-}
-
-/* ── DIVIDER ──────────────────────────────────── */
-.divider {
-  border: none;
-  border-top: 2px solid var(--border);
-  margin: 0;
-}
-
-/* ── TABLE SECTION ───────────────────────────── */
-.tbl-section {
-  width: 100%;
-  padding: 1.8rem 1.6rem 3rem;
-}
-.tbl-section h2 {
-  font-family: 'Tiro Devanagari Bengali', serif;
-  font-size: 1.2rem;
-  color: var(--rust);
-  margin-bottom: 1rem;
-}
-.tbl-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-table {
-  border-collapse: collapse;
-  width: 100%;
-  min-width: 580px;
-  font-size: .8rem;
-}
-thead tr {
-  background: var(--deep);
-  color: var(--gold);
-  font-family: 'DM Mono', monospace;
-  font-size: .62rem;
-  letter-spacing: .1em;
-  text-transform: uppercase;
-}
-th { padding: .65rem .9rem; text-align: left; white-space: nowrap; }
-td { padding: .55rem .9rem; border-bottom: 1px solid var(--border); vertical-align: top; }
-tbody tr { cursor: pointer; transition: background .12s; }
-tbody tr:hover { background: #f0e5d0; }
-tbody tr.on { background: #ffe8b8; }
-td.dn { font-weight: 700; color: var(--rust); white-space: nowrap; }
-td.gc { font-style: italic; color: var(--teal); font-size: .76rem; }
-td.nr { font-family: 'DM Mono', monospace; font-size: .66rem; color: #a08060; }
-
-/* ── RESPONSIVE ──────────────────────────────── */
-@media (max-width: 820px) {
-  .top-section { flex-direction: column; }
-  .map-col { width: 100%; max-width: 100%; padding: 1rem; }
-  .panel-col { border-left: none; border-top: 3px solid var(--ochre); width: 100%; min-height: 0; }
-  .tbl-section { padding: 1.2rem 1rem 2.5rem; }
-}
-@media (max-width: 480px) {
-  header { padding: 1rem; }
-  .map-col { padding: .8rem .6rem; }
-  .panel-col { padding: 1.1rem .9rem; }
+@media(max-width:420px){
+  header{padding:.9rem 1rem}
+  .map-col{padding:.7rem .5rem}
+  .panel-col{padding:1rem .85rem}
 }
 </style>
 </head>
 <body>
 
-<!-- HEADER -->
 <header>
   <h1>পশ্চিমবঙ্গ &nbsp;·&nbsp; West Bengal</h1>
   <span>Districts · Highlights · GI Tags</span>
 </header>
 
-<!-- TOP: MAP + INFO PANEL -->
-<div class="top-section">
-
-  <!-- MAP -->
+<div class="top">
   <div class="map-col">
-    <div class="map-hint">↓ Click / tap a district</div>
-    <svg id="wb-map" viewBox="0 0 320 720" xmlns="http://www.w3.org/2000/svg">
+    <div class="map-hint">↓ Click / tap any district</div>
+    <div class="map-wrap" id="mapWrap">
+      <img src="WestBengalDistricts_numbered_svg.png" id="mapImg"
+           alt="West Bengal Districts Map" usemap="#wbmap">
+      <canvas id="hl-canvas"></canvas>
+    </div>
 
-      <!-- ══ NORTH: Hills ══ -->
-      <!-- Darjeeling -->
-      <polygon class="district" data-id="darjeeling" fill="#6baed6"
-        points="82,8 138,8 150,28 144,56 112,62 88,48 78,26"/>
-      <text class="lbl" x="113" y="33">Darjeeling</text>
+    <!--
+      Coordinates mapped on original 960×1449 image.
+      Each polygon traces the district boundary from the uploaded map.
+    -->
+    <map name="wbmap" id="wbmap">
 
-      <!-- Kalimpong -->
-      <polygon class="district" data-id="kalimpong" fill="#9ecae1"
-        points="150,28 182,14 194,34 182,56 144,56 150,28"/>
-      <text class="lbl" x="166" y="38">Kalimpong</text>
+      <!-- DARJEELING (yellow-green, left strip with top notch) -->
+      <area data-id="darjeeling" shape="poly" alt="Darjeeling" coords="
+        430,18, 455,14, 472,25, 482,42, 486,60, 492,80, 496,100, 492,122,
+        484,142, 474,162, 462,180, 452,198, 446,218, 440,228, 430,232,
+        420,224, 410,208, 402,190, 396,170, 392,150, 390,128, 393,108,
+        398,88, 406,70, 414,52, 422,36"/>
 
-      <!-- ══ TERAI / DOOARS ══ -->
-      <!-- Jalpaiguri -->
-      <polygon class="district" data-id="jalpaiguri" fill="#74c476"
-        points="78,62 144,56 182,56 195,72 184,98 132,103 82,93 72,77"/>
-      <text class="lbl" x="130" y="78">Jalpaiguri</text>
+      <!-- KALIMPONG (pink, top-right blob) -->
+      <area data-id="kalimpong" shape="poly" alt="Kalimpong" coords="
+        492,80, 500,62, 508,46, 518,34, 532,22, 548,16, 566,18, 582,28,
+        594,44, 600,62, 600,82, 594,100, 582,114, 566,122, 548,126,
+        530,122, 514,112, 502,98, 494,84"/>
 
-      <!-- Alipurduar -->
-      <polygon class="district" data-id="alipurduar" fill="#a1d99b"
-        points="182,56 228,52 238,74 226,100 184,98 195,72 182,56"/>
-      <text class="lbl" x="207" y="76">Alipurduar</text>
+      <!-- JALPAIGURI (green, wide horizontal band) -->
+      <area data-id="jalpaiguri" shape="poly" alt="Jalpaiguri" coords="
+        492,122, 500,100, 514,112, 530,122, 548,126, 566,122, 582,114,
+        594,100, 606,104, 624,110, 648,118, 670,128, 686,144, 690,162,
+        682,178, 666,188, 646,192, 622,188, 600,180, 578,172, 556,168,
+        534,168, 512,172, 496,180, 486,168, 480,148, 482,128"/>
 
-      <!-- ══ NORTH BENGAL ══ -->
-      <!-- Cooch Behar -->
-      <polygon class="district" data-id="coochbehar" fill="#c7e9c0"
-        points="132,103 184,98 226,100 220,130 168,133 128,122"/>
-      <text class="lbl" x="174" y="116">Cooch Behar</text>
+      <!-- ALIPURDUAR (purple, top-right block) -->
+      <area data-id="alipurduar" shape="poly" alt="Alipurduar" coords="
+        690,162, 698,144, 712,130, 728,118, 748,112, 770,114, 790,122,
+        808,136, 820,154, 824,174, 820,194, 806,210, 788,220, 766,226,
+        744,222, 722,212, 704,198, 694,182, 690,166"/>
 
-      <!-- Uttar Dinajpur -->
-      <polygon class="district" data-id="uttardinajpur" fill="#fdae6b"
-        points="82,93 132,103 128,122 112,148 76,143 66,118"/>
-      <text class="lbl" x="97" y="119">Uttar Dinajpur</text>
+      <!-- COOCH BEHAR (yellow, bottom-right) -->
+      <area data-id="coochbehar" shape="poly" alt="Cooch Behar" coords="
+        666,188, 682,178, 690,162, 694,182, 704,198, 722,212, 744,222,
+        766,226, 788,220, 806,210, 820,194, 830,208, 840,226, 846,246,
+        842,266, 828,280, 810,288, 788,290, 764,282, 740,270, 716,260,
+        692,256, 668,252, 650,242, 644,228, 648,210, 656,196"/>
 
-      <!-- Dakshin Dinajpur -->
-      <polygon class="district" data-id="dakshindinajpur" fill="#fd8d3c"
-        points="76,143 112,148 108,174 92,188 66,178 62,158"/>
-      <text class="lbl" x="86" y="165">Dakshin Dinajpur</text>
+      <!-- UTTAR DINAJPUR (salmon/pink, narrow middle strip) -->
+      <area data-id="uttardinajpur" shape="poly" alt="Uttar Dinajpur" coords="
+        440,228, 452,218, 464,228, 472,246, 478,268, 482,292, 484,318,
+        480,342, 472,362, 460,378, 448,390, 436,396, 422,390, 412,376,
+        406,358, 402,338, 400,316, 402,294, 408,272, 416,254, 428,240"/>
 
-      <!-- Malda -->
-      <polygon class="district" data-id="malda" fill="#f16913"
-        points="66,178 92,188 108,174 122,193 116,229 78,234 56,212 54,192"/>
-      <text class="lbl" x="87" y="204">Malda</text>
+      <!-- DAKSHIN DINAJPUR (light green, right of Uttar Dinajpur) -->
+      <area data-id="dakshindinajpur" shape="poly" alt="Dakshin Dinajpur" coords="
+        480,292, 496,280, 514,272, 532,270, 550,274, 566,284, 576,300,
+        580,318, 576,338, 564,352, 548,362, 530,366, 512,362, 496,352,
+        482,338, 476,320, 476,304"/>
 
-      <!-- ══ HEARTLAND ══ -->
-      <!-- Murshidabad -->
-      <polygon class="district" data-id="murshidabad" fill="#d94801"
-        points="78,234 116,229 122,193 144,204 150,244 142,278 108,284 80,268 70,248"/>
-      <text class="lbl" x="112" y="249">Murshidabad</text>
+      <!-- MALDA (purple, central-west large) -->
+      <area data-id="malda" shape="poly" alt="Malda" coords="
+        402,338, 408,318, 416,300, 428,284, 440,272, 454,264, 468,270,
+        478,282, 482,300, 482,322, 480,344, 480,366, 476,390, 468,410,
+        456,426, 440,436, 422,440, 402,436, 382,426, 366,412, 354,396,
+        348,376, 346,356, 350,336, 358,320, 370,308, 384,300, 396,298,
+        402,314"/>
 
-      <!-- Birbhum -->
-      <polygon class="district" data-id="birbhum" fill="#8856a7"
-        points="54,192 78,234 70,248 56,272 32,262 26,237 36,212"/>
-      <text class="lbl" x="50" y="235">Birbhum</text>
+      <!-- MURSHIDABAD (yellow, large central-east) -->
+      <area data-id="murshidabad" shape="poly" alt="Murshidabad" coords="
+        480,366, 486,346, 498,334, 516,328, 534,330, 552,342, 564,358,
+        572,378, 576,400, 578,424, 576,448, 570,470, 558,486, 540,496,
+        520,500, 502,494, 486,482, 476,464, 470,444, 468,422, 468,400,
+        470,380"/>
 
-      <!-- Nadia -->
-      <polygon class="district" data-id="nadia" fill="#9ebcda"
-        points="142,278 150,244 174,254 180,284 167,308 141,303 126,288"/>
-      <text class="lbl" x="154" y="279">Nadia</text>
+      <!-- BIRBHUM (salmon, left of Murshidabad) -->
+      <area data-id="birbhum" shape="poly" alt="Birbhum" coords="
+        348,376, 356,358, 366,344, 378,332, 392,322, 406,316, 410,334,
+        412,356, 412,378, 408,400, 400,418, 388,430, 372,440, 354,446,
+        336,446, 320,438, 308,426, 300,408, 298,390, 304,372, 316,360,
+        330,354, 344,352"/>
 
-      <!-- N 24 Parganas -->
-      <polygon class="district" data-id="north24parganas" fill="#8c96c6"
-        points="167,308 180,284 203,292 217,318 207,348 176,353 156,333"/>
-      <text class="lbl" x="186" y="320">N 24 Pgs</text>
+      <!-- NADIA (lavender, right-centre) -->
+      <area data-id="nadia" shape="poly" alt="Nadia" coords="
+        570,470, 576,448, 582,468, 588,490, 592,514, 594,538, 590,558,
+        580,568, 564,574, 546,570, 530,558, 520,542, 516,524, 514,506,
+        516,488, 522,472, 536,460, 552,456, 564,458"/>
 
-      <!-- Purba Bardhaman -->
-      <polygon class="district" data-id="purbabardhaman" fill="#88419d"
-        points="56,272 70,248 80,268 108,284 112,314 92,333 62,322 46,297"/>
-      <text class="lbl" x="79" y="300">Purba Bardhaman</text>
+      <!-- NORTH 24 PARGANAS (purple, right) -->
+      <area data-id="north24parganas" shape="poly" alt="North 24 Parganas" coords="
+        594,538, 600,518, 612,500, 628,488, 646,482, 664,482, 682,490,
+        696,504, 704,522, 704,544, 696,562, 682,576, 662,584, 640,588,
+        618,584, 600,572, 592,556"/>
 
-      <!-- Paschim Bardhaman -->
-      <polygon class="district" data-id="paschimbardhaman" fill="#6a51a3"
-        points="32,262 56,272 46,297 36,312 14,302 10,277"/>
-      <text class="lbl" x="30" y="285">Paschim Bardhaman</text>
+      <!-- PURBA BARDHAMAN (green, centre) -->
+      <area data-id="purbabardhaman" shape="poly" alt="Purba Bardhaman" coords="
+        422,440, 438,436, 454,442, 466,456, 474,472, 478,492, 476,514,
+        468,530, 454,542, 436,548, 416,548, 398,540, 382,528, 370,512,
+        366,492, 366,472, 372,454, 382,444, 396,438"/>
 
-      <!-- ══ GREATER KOLKATA ══ -->
-      <!-- Hooghly -->
-      <polygon class="district" data-id="hooghly" fill="#e7298a"
-        points="92,333 112,314 130,323 136,348 122,362 96,358 80,348"/>
-      <text class="lbl" x="109" y="340">Hooghly</text>
+      <!-- PASCHIM BARDHAMAN (green, left of PB) -->
+      <area data-id="paschimbardhaman" shape="poly" alt="Paschim Bardhaman" coords="
+        298,408, 308,424, 320,438, 336,446, 354,446, 370,454, 378,468,
+        372,484, 360,496, 342,502, 322,502, 302,492, 286,478, 278,460,
+        278,440, 284,424, 296,412"/>
 
-      <!-- Howrah -->
-      <polygon class="district" data-id="howrah" fill="#ce1256"
-        points="122,362 136,348 150,353 154,374 140,385 122,377"/>
-      <text class="lbl" x="137" y="367">Howrah</text>
+      <!-- HOOGHLY (green, centre-south) -->
+      <area data-id="hooghly" shape="poly" alt="Hooghly" coords="
+        416,548, 436,548, 450,556, 460,568, 464,586, 460,604, 450,616,
+        434,624, 416,626, 400,618, 388,606, 382,588, 384,568, 394,554,
+        406,548"/>
 
-      <!-- Kolkata -->
-      <polygon class="district" data-id="kolkata" fill="#f768a1"
-        points="150,353 168,350 178,353 180,371 167,378 154,374 150,353"/>
-      <text class="lbl" x="164" y="362">Kolkata</text>
+      <!-- HOWRAH (small pink) -->
+      <area data-id="howrah" shape="poly" alt="Howrah" coords="
+        460,568, 470,556, 484,550, 498,550, 512,558, 520,572, 518,588,
+        510,602, 494,612, 478,614, 464,606, 458,592, 458,578"/>
 
-      <!-- ══ JUNGLEMAHAL ══ -->
-      <!-- Bankura -->
-      <polygon class="district" data-id="bankura" fill="#74add1"
-        points="14,302 36,312 46,297 62,322 58,357 32,367 8,352 4,322"/>
-      <text class="lbl" x="32" y="334">Bankura</text>
+      <!-- KOLKATA (tiny, right of Howrah) -->
+      <area data-id="kolkata" shape="poly" alt="Kolkata" coords="
+        518,558, 530,548, 546,544, 560,548, 570,560, 572,576, 566,590,
+        552,600, 536,604, 520,598, 512,586, 514,570"/>
 
-      <!-- Purulia -->
-      <polygon class="district" data-id="purulia" fill="#4575b4"
-        points="4,260 14,302 4,322 -6,307 -6,270 0,257"/>
-      <text class="lbl" x="2" y="288">Purulia</text>
+      <!-- BANKURA (yellow, large western) -->
+      <area data-id="bankura" shape="poly" alt="Bankura" coords="
+        278,460, 286,442, 296,428, 310,416, 324,428, 334,446, 342,462,
+        346,482, 346,504, 340,526, 330,544, 316,558, 298,566, 280,566,
+        262,558, 246,546, 234,530, 228,512, 226,492, 230,472, 240,456,
+        256,446, 270,440"/>
 
-      <!-- Jhargram -->
-      <polygon class="district" data-id="jhargram" fill="#313695"
-        points="8,352 32,367 27,403 6,408 -6,388 -4,362"/>
-      <text class="lbl" x="11" y="381">Jhargram</text>
+      <!-- PURULIA (purple, far west) -->
+      <area data-id="purulia" shape="poly" alt="Purulia" coords="
+        100,498, 120,480, 140,468, 160,462, 180,464, 200,472, 218,486,
+        228,504, 228,524, 220,542, 206,556, 188,566, 168,568, 148,562,
+        130,550, 116,532, 106,512, 100,496"/>
 
-      <!-- ══ MEDINIPUR ══ -->
-      <!-- Paschim Medinipur -->
-      <polygon class="district" data-id="paschimmedinipur" fill="#abd9e9"
-        points="58,357 80,348 96,358 107,382 100,424 74,437 44,427 32,402 27,403 32,367 58,357"/>
-      <text class="lbl" x="67" y="396">Paschim Medinipur</text>
+      <!-- JHARGRAM (green, lower-west) -->
+      <area data-id="jhargram" shape="poly" alt="Jhargram" coords="
+        164,640, 184,626, 204,618, 224,618, 244,626, 260,642, 268,660,
+        268,682, 260,700, 244,712, 224,718, 204,716, 184,706, 168,692,
+        158,674, 158,656"/>
 
-      <!-- Purba Medinipur -->
-      <polygon class="district" data-id="purbamedinipur" fill="#ffffbf"
-        points="107,382 122,377 140,385 154,374 167,378 170,400 160,432 140,450 116,445 100,430 100,424 107,382"/>
-      <text class="lbl" x="133" y="413">Purba Medinipur</text>
+      <!-- PASCHIM MEDINIPUR (salmon, lower centre-left) -->
+      <area data-id="paschimmedinipur" shape="poly" alt="Paschim Medinipur" coords="
+        226,524, 234,532, 246,546, 262,558, 280,566, 298,566, 316,558,
+        330,546, 340,528, 348,546, 354,568, 358,592, 360,616, 358,640,
+        350,660, 336,674, 316,682, 294,684, 272,678, 252,664, 236,646,
+        222,626, 214,608, 210,588, 210,568, 216,550, 226,542"/>
 
-      <!-- ══ SUNDARBAN ══ -->
-      <!-- South 24 Parganas -->
-      <polygon class="district" data-id="south24parganas" fill="#fee090"
-        points="140,385 154,374 167,378 180,371 194,382 202,424 190,464 166,488 140,492 118,472 116,445 140,450 160,432 170,400 160,432 140,450 116,445 100,430 100,424 107,382 122,377 140,385"/>
-      <text class="lbl" x="155" y="443">S 24 Pgs</text>
+      <!-- PURBA MEDINIPUR (purple/lavender, coastal) -->
+      <area data-id="purbamedinipur" shape="poly" alt="Purba Medinipur" coords="
+        458,590, 466,606, 470,626, 470,648, 464,670, 452,690, 438,706,
+        420,720, 400,730, 380,736, 360,730, 346,718, 338,702, 336,684,
+        342,666, 352,652, 362,638, 368,620, 372,600, 376,578, 382,558,
+        394,548, 406,548, 416,556, 428,566, 440,578, 450,590"/>
 
-    </svg>
+      <!-- SOUTH 24 PARGANAS (large green, delta/coastal) -->
+      <area data-id="south24parganas" shape="poly" alt="South 24 Parganas" coords="
+        566,590, 572,606, 576,628, 572,650, 560,666, 544,678, 526,686,
+        506,692, 484,692, 464,684, 452,698, 450,720, 452,746, 458,768,
+        464,792, 466,818, 460,844, 448,864, 432,876, 412,880, 392,870,
+        374,854, 358,832, 344,808, 332,782, 325,754, 320,726, 322,700,
+        328,678, 338,658, 348,640, 358,622, 362,600, 366,578, 374,556,
+        386,548, 400,548, 414,556, 428,566, 440,576, 452,588, 466,602,
+        480,614, 496,620, 514,620, 530,614, 546,604, 558,596"/>
 
-    <ul class="map-legend">
-      <li><div class="dot" style="background:#6baed6"></div>Hills</li>
-      <li><div class="dot" style="background:#74c476"></div>Terai–Dooars</li>
-      <li><div class="dot" style="background:#fdae6b"></div>Dinajpur–Malda</li>
-      <li><div class="dot" style="background:#d94801"></div>Murshidabad–Nadia</li>
-      <li><div class="dot" style="background:#8856a7"></div>Bardhaman–Birbhum</li>
-      <li><div class="dot" style="background:#e7298a"></div>Greater Kolkata</li>
-      <li><div class="dot" style="background:#4575b4"></div>Junglemahal</li>
-      <li><div class="dot" style="background:#abd9e9"></div>Medinipur</li>
-      <li><div class="dot" style="background:#fee090"></div>Sundarban</li>
+    </map>
+    <!-- GI colour legend -->
+    <ul class="gi-legend">
+      <li><div class="dot" style="background:var(--rose)"></div>GI ≤ 2012</li>
+      <li><div class="dot" style="background:var(--indigo)"></div>GI 2013–2019</li>
+      <li><div class="dot" style="background:var(--teal)"></div>GI 2020+</li>
+      <li><div class="dot" style="background:#5a6a3a;opacity:.75"></div>State-wide GI</li>
     </ul>
   </div>
 
@@ -454,28 +313,22 @@ td.nr { font-family: 'DM Mono', monospace; font-size: .66rem; color: #a08060; }
         <circle cx="28" cy="24" r="5" stroke="#c8821a" stroke-width="2"/>
         <path d="M28 40v10" stroke="#c8821a" stroke-width="2" stroke-linecap="round"/>
       </svg>
-      <p>Select a district<br>on the map or<br>click a table row</p>
+      <p>Click / tap a district<br>on the map or<br>a row in the table</p>
     </div>
     <div class="d-card" id="dcard"></div>
   </div>
+</div>
 
-</div><!-- /top-section -->
+<div id="tooltip"></div>
 
-<hr class="divider">
+<hr class="div">
 
-<!-- TABLE -->
-<div class="tbl-section">
+<div class="tbl-sec">
   <h2>All Districts — Reference Table</h2>
   <div class="tbl-scroll">
     <table>
       <thead>
-        <tr>
-          <th>#</th>
-          <th>District</th>
-          <th>Region</th>
-          <th>Key Highlights</th>
-          <th>GI Tags (Year)</th>
-        </tr>
+        <tr><th>#</th><th>District</th><th>Region</th><th>Key Highlights</th><th>GI Tags (Year)</th></tr>
       </thead>
       <tbody id="tbody"></tbody>
     </table>
@@ -483,48 +336,47 @@ td.nr { font-family: 'DM Mono', monospace; font-size: .66rem; color: #a08060; }
 </div>
 
 <script>
-/* ── DATA ─────────────────────────────────────── */
+/* ── DATA ─────────────────────────────── */
 const DATA = {
-  darjeeling:       { name:"Darjeeling",         region:"Northern Hills",        hi:["Darjeeling Himalayan Railway (UNESCO)","Tiger Hill sunrise","Tea gardens","Batasia Loop"],                                gi:[{n:"Darjeeling Tea",y:2004}] },
-  kalimpong:        { name:"Kalimpong",           region:"Northern Hills",        hi:["Flower orchards","Cactus nurseries","Zang Dhok Palri Phodang Monastery","Morgan House"],                                  gi:[] },
-  jalpaiguri:       { name:"Jalpaiguri",          region:"Terai–Dooars",          hi:["Jalpesh Mandir","Gorumara National Park","Tea estates","Chapramari Wildlife Sanctuary"],                                   gi:[{n:"Black Nunia Rice",y:2024}] },
-  alipurduar:       { name:"Alipurduar",          region:"Dooars",                hi:["Jaldapara — one-horned rhinos","Buxa Tiger Reserve & Fort","Torsa River","Chilapata Forest"],                             gi:[] },
-  coochbehar:       { name:"Cooch Behar",         region:"North Bengal",          hi:["Cooch Behar Palace (Italianate)","Madan Mohan Temple","Rashmela festival","Sitai indigo heritage"],                        gi:[{n:"Shital Pati",y:2018}] },
-  uttardinajpur:    { name:"Uttar Dinajpur",      region:"North Bengal",          hi:["Raiganj Wildlife Sanctuary","Kulik Bird Sanctuary","Raiganj town","Indo-Bangladesh border"],                              gi:[{n:"Tulaipanji Rice",y:2017}] },
-  dakshindinajpur:  { name:"Dakshin Dinajpur",    region:"North Bengal",          hi:["Bangarh archaeological site","Atreyee River","Tapan reserved forest","Gangarampur"],                                       gi:[{n:"Kushmandi Wooden Mask",y:2018}] },
-  malda:            { name:"Malda",               region:"North Bengal",          hi:["Leading mango producer of WB","Adina Mosque (largest in Bengal)","Malda silk heritage","Gambhira Dance","Gour & Pandua ruins"], gi:[{n:"Laxman Bhog Mango",y:2008},{n:"Khirsapati / Himsagar Mango",y:2008},{n:"Fazli Mango",y:2008},{n:"Nistari Silk Yarn",y:2025}] },
-  murshidabad:      { name:"Murshidabad",         region:"WB Heartland",          hi:["Hazarduari Palace (1000 doors)","Murshidabad Biryani","Garad & Korial sarees","Nawabi heritage","Silk weaving"], gi:[{n:"Garad Saree",y:2024},{n:"Korial Saree",y:2024},{n:"Chanabora",y:2025}] },
-  birbhum:          { name:"Birbhum",             region:"WB Heartland",          hi:["Tarapith Shakti Pitha","Baul folk music & culture","Santiniketan (Visva-Bharati)","Suri town"],                           gi:[{n:"Santiniketan Leather Goods",y:2007}] },
-  nadia:            { name:"Nadia",               region:"WB Heartland",          hi:["ISKCON Mayapur — world HQ","Battle of Plassey (1757)","Shantipuri saree weaving","Nabadwip — birthplace of Sri Chaitanya"], gi:[{n:"Shantipuri Saree",y:2009},{n:"Tangail Saree",y:2024}] },
-  north24parganas:  { name:"North 24 Parganas",   region:"Greater Kolkata",       hi:["NSCBI Airport (Kolkata Airport)","Birthplace of Bankim Chandra","Sundarbans fringe","Salt Lake / Bidhannagar IT hub"],     gi:[] },
-  purbabardhaman:   { name:"Purba Bardhaman",     region:"WB Heartland",          hi:["Rice Bowl of West Bengal","108 Shiva Temples at Kalna","Damodar River","Burdwan sweets"],                                  gi:[{n:"Gobindobhog Rice",y:2017},{n:"Sitabhog",y:2017},{n:"Mihidana",y:2017},{n:"Tangail Saree",y:2024}] },
-  paschimbardhaman: { name:"Paschim Bardhaman",   region:"WB Heartland",          hi:["Raniganj Coalfield — oldest in India","Durgapur Steel Plant","Chittaranjan Locomotive Works","Asansol"],                  gi:[] },
-  hooghly:          { name:"Hooghly",             region:"Greater Kolkata",       hi:["Bandel Church (1599)","Tarakeshwar Temple","Hangseshwari Temple","Legacy of Ram Mohan Roy & Ramakrishna"],                gi:[{n:"Dhaniakhali Saree",y:2011},{n:"Kamarpukur White Bonde",y:2025}] },
-  howrah:           { name:"Howrah",              region:"Greater Kolkata",       hi:["Howrah Junction — busiest railway station","Belur Math (Ramakrishna Mission HQ)","Industrial centre","Botanical Garden"],  gi:[] },
-  kolkata:          { name:"Kolkata",             region:"Greater Kolkata",       hi:["Eden Gardens","Howrah Bridge","Dakshineswar Kali Temple","150-yr tram network","Victoria Memorial"],                      gi:[] },
-  bankura:          { name:"Bankura",             region:"Junglemahal",           hi:["Bishnupur terracotta temples","Ras Mancha","Bankura Horse clay craft","Baluchari sarees"],                                  gi:[{n:"Baluchari Saree",y:2012},{n:"Bankura Panchmura Terracotta Craft",y:2018},{n:"Motichur Laddu",y:2025}] },
-  purulia:          { name:"Purulia",             region:"Junglemahal",           hi:["Ajodhya Hills","Joychandi Pahar","Chhau Dance (UNESCO)","Lac industry","Deul architecture"],                              gi:[{n:"Purulia Chhau Mask",y:2018}] },
-  jhargram:         { name:"Jhargram",            region:"Junglemahal",           hi:["Jhargram Raj Palace","Kanak Durga Temple","Belpahari forests","Subarnarekha River"],                                        gi:[] },
-  paschimmedinipur: { name:"Paschim Medinipur",   region:"South–West Bengal",     hi:["IIT Kharagpur","Midnapore town","Madurkati mat weaving","Bengal Patachitra scroll painting"],                              gi:[{n:"Madurkati Mats",y:2018},{n:"Bengal Patachitra",y:2018}] },
-  purbamedinipur:   { name:"Purba Medinipur",     region:"South–West Bengal",     hi:["Digha beach","Mandarmani beach","Tajpur beach","Bargabhima Temple","Haldia port"],                                          gi:[] },
-  south24parganas:  { name:"South 24 Parganas",   region:"Sundarban Delta",       hi:["Sundarbans — world's largest mangrove","Sagar Island (Ganga Sagar)","Royal Bengal Tiger","Sagardwip pilgrimage"],          gi:[{n:"Joynagarer Moa",y:2015},{n:"Sundarbans Mangrove Honey",y:2024},{n:"Baruipur Guava",y:2025}] }
+  darjeeling:       {name:"Darjeeling",         region:"Northern Hills",    hi:["Darjeeling Himalayan Railway (UNESCO World Heritage)","Tiger Hill sunrise point","World-famous tea gardens","Batasia Loop & War Memorial","Gateway to Sikkim & Bhutan"], gi:[{n:"Darjeeling Tea",y:2004}]},
+  kalimpong:        {name:"Kalimpong",           region:"Northern Hills",    hi:["Flower & orchid nurseries — national suppliers","Cactus nurseries","Zang Dhok Palri Phodang Monastery","Morgan House heritage bungalow","Gateway to Bhutan"], gi:[]},
+  jalpaiguri:       {name:"Jalpaiguri",          region:"Terai–Dooars",     hi:["Jalpesh Mandir (ancient Shiva temple)","Gorumara National Park (rhinos & elephants)","Extensive tea estates","Chapramari Wildlife Sanctuary","Teesta River"], gi:[{n:"Black Nunia Rice",y:2024}]},
+  alipurduar:       {name:"Alipurduar",          region:"Dooars",            hi:["Jaldapara National Park — one-horned rhinos","Buxa Tiger Reserve & Buxa Fort","Torsa River","Chilapata Forest — ancient ruins","Rajabhatkhawa Bird Sanctuary"], gi:[]},
+  coochbehar:       {name:"Cooch Behar",         region:"North Bengal",      hi:["Cooch Behar Palace (Italian Renaissance style)","Madan Mohan Temple","Rashmela festival","Sitai indigo weaving heritage","Koch dynasty history"], gi:[{n:"Shital Pati",y:2018}]},
+  uttardinajpur:    {name:"Uttar Dinajpur",      region:"North Bengal",      hi:["Raiganj Wildlife Sanctuary (Asia's 2nd largest heron colony)","Kulik Bird Sanctuary","Raiganj town","Indo-Bangladesh border region"], gi:[{n:"Tulaipanji Rice",y:2017}]},
+  dakshindinajpur:  {name:"Dakshin Dinajpur",    region:"North Bengal",      hi:["Bangarh archaeological site (ancient Pundranagara city)","Atreyee River","Tapan reserved forest","Gangarampur town","Kushmandi Wooden Mask craft"], gi:[{n:"Kushmandi Wooden Mask",y:2018}]},
+  malda:            {name:"Malda",               region:"North Bengal",      hi:["Leading mango producer of West Bengal","Adina Mosque — largest medieval mosque in Bengal","Malda silk weaving heritage","Gambhira folk dance","Gour & Pandua historical ruins"], gi:[{n:"Laxman Bhog Mango",y:2008},{n:"Khirsapati / Himsagar Mango",y:2008},{n:"Fazli Mango",y:2008},{n:"Nistari Silk Yarn",y:2025}]},
+  murshidabad:      {name:"Murshidabad",         region:"WB Heartland",      hi:["Hazarduari Palace — 1000 doors, Nawabi grandeur","Murshidabad Biryani tradition","Garad & Korial silk sarees","Last independent Nawab of Bengal's capital","Silk weaving at Jiaganj-Azimganj"], gi:[{n:"Garad Saree",y:2024},{n:"Korial Saree",y:2024},{n:"Chanabora",y:2025}]},
+  birbhum:          {name:"Birbhum",             region:"WB Heartland",      hi:["Tarapith — famous Shakti Pitha","Baul folk music & culture (UNESCO Intangible Heritage)","Santiniketan — Tagore's Visva-Bharati University","Suri district headquarters","Terracotta temples at Hetampur & Siuri"], gi:[{n:"Santiniketan Leather Goods",y:2007}]},
+  nadia:            {name:"Nadia",               region:"WB Heartland",      hi:["ISKCON Mayapur — world headquarters","Battle of Plassey site (1757)","Shantipuri saree weaving tradition","Nabadwip — birthplace of Sri Chaitanya Mahaprabhu","Krishna Nagar clay dolls"], gi:[{n:"Shantipuri Saree",y:2009},{n:"Tangail Saree",y:2024}]},
+  north24parganas:  {name:"North 24 Parganas",   region:"Greater Kolkata",   hi:["NSCBI Airport (Kolkata International Airport)","Birthplace of Bankim Chandra Chattopadhyay","Sundarbans fringe forests","Salt Lake / Bidhannagar — major IT hub","Barasat city"], gi:[]},
+  purbabardhaman:   {name:"Purba Bardhaman",     region:"WB Heartland",      hi:["Rice Bowl of West Bengal","108 Shiva Temples at Kalna (unique terracotta complex)","Damodar River valley","Famous Mihidana & Sitabhog sweets of Burdwan town"], gi:[{n:"Gobindobhog Rice",y:2017},{n:"Sitabhog",y:2017},{n:"Mihidana",y:2017},{n:"Tangail Saree",y:2024}]},
+  paschimbardhaman: {name:"Paschim Bardhaman",   region:"WB Heartland",      hi:["Raniganj Coalfield — oldest coal mine in India","Durgapur Steel Plant (SAIL)","Chittaranjan Locomotive Works","Asansol — 2nd largest city in WB","Damodar Valley Corporation"], gi:[]},
+  hooghly:          {name:"Hooghly",             region:"Greater Kolkata",   hi:["Bandel Church — built 1599 (oldest church in Bengal)","Tarakeshwar Shiva Temple — major pilgrimage centre","Hangseshwari Temple, Bansberia","Legacy of Raja Ram Mohan Roy & Sri Ramakrishna","Chinsurah Dutch colonial heritage"], gi:[{n:"Dhaniakhali Saree",y:2011},{n:"Kamarpukur White Bonde",y:2025}]},
+  howrah:           {name:"Howrah",              region:"Greater Kolkata",   hi:["Howrah Junction — one of India's busiest railway stations","Belur Math — Ramakrishna Mission world HQ","Major industrial and commercial hub","Botanical Garden (Acharya Jagadish Chandra Bose Garden)"], gi:[]},
+  kolkata:          {name:"Kolkata",             region:"Greater Kolkata",   hi:["Eden Gardens — iconic cricket stadium","Howrah Bridge (Rabindra Setu) & Vidyasagar Setu","Dakshineswar Kali Temple","150-year-old tram network","Victoria Memorial — white marble monument","City of Joy & cultural capital of India"], gi:[]},
+  bankura:          {name:"Bankura",             region:"Junglemahal",       hi:["Bishnupur — terracotta temple town (UNESCO tentative list)","Ras Mancha (unique pyramid-style temple)","Bankura Horse — iconic terracotta craft","Baluchari silk sarees","Susunia Hill rock engravings"], gi:[{n:"Baluchari Saree",y:2012},{n:"Bankura Panchmura Terracotta Craft",y:2018},{n:"Motichur Laddu",y:2025}]},
+  purulia:          {name:"Purulia",             region:"Junglemahal",       hi:["Ajodhya Hills — highest plateau in West Bengal","Joychandi Pahar rock formation","Chhau Dance (UNESCO Intangible Cultural Heritage)","Lac bangles & lac industry","Deul style terracotta temples"], gi:[{n:"Purulia Chhau Mask",y:2018}]},
+  jhargram:         {name:"Jhargram",            region:"Junglemahal",       hi:["Jhargram Raj Palace","Kanak Durga Temple","Belpahari & Jhilimili sal forests","Subarnarekha River","Eco-tourism and forest trails"], gi:[]},
+  paschimmedinipur: {name:"Paschim Medinipur",   region:"South–West Bengal", hi:["IIT Kharagpur — India's first IIT (1951)","Midnapore — historic town of freedom fighters","Madurkati mat weaving tradition","Bengal Patachitra scroll painting","Kangsabati River & Mukutmanipur dam"], gi:[{n:"Madurkati Mats",y:2018},{n:"Bengal Patachitra",y:2018}]},
+  purbamedinipur:   {name:"Purba Medinipur",     region:"South–West Bengal", hi:["Digha — Bengal's most popular beach resort","Mandarmani & Tajpur beaches","Bargabhima Temple, Tamluk","Haldia deep-sea port & petrochemical hub","Contai (Kanthi) market town"], gi:[]},
+  south24parganas:  {name:"South 24 Parganas",   region:"Sundarban Delta",   hi:["Sundarbans — world's largest mangrove delta (UNESCO World Heritage Site)","Sagar Island — Ganga Sagar pilgrimage (Makar Sankranti)","Royal Bengal Tiger habitat","Irrawaddy & Gangetic dolphins","Joynagar — birthplace of the famous Moa sweet"], gi:[{n:"Joynagarer Moa",y:2015},{n:"Sundarbans Mangrove Honey",y:2024},{n:"Baruipur Guava",y:2025}]}
 };
 
-const STATE_GI = [
+const STATE_GI=[
   {n:"Nakshi Kantha",y:2008},{n:"Banglar Rasogolla",y:2017},
   {n:"Bengal Dokra Art",y:2018},{n:"Nolen Gur Sandesh",y:2025},{n:"Radhunipagol Rice",y:2025}
 ];
 
-function pillClass(y){ return y<=2012?'v': y<=2019?'m':'r'; }
+function pillClass(y){return y<=2012?'v':y<=2019?'m':'r'}
 
-/* ── RENDER CARD ─────────────────────────────── */
+/* ── RENDER PANEL CARD ───────────────── */
 function renderCard(id){
-  const d = DATA[id]; if(!d) return;
-  const giHTML = d.gi.length
-    ? d.gi.map(g=>`<div class="gi-pill ${pillClass(g.y)}"><span class="gn">${g.n}</span><span class="gy">${g.y}</span></div>`).join('')
-    : `<p class="no-gi">No GI tag registered yet</p>`;
-
-  document.getElementById('dcard').innerHTML = `
+  const d=DATA[id]; if(!d)return;
+  const giHTML=d.gi.length
+    ?d.gi.map(g=>`<div class="gi-pill ${pillClass(g.y)}"><span class="gn">${g.n}</span><span class="gy">${g.y}</span></div>`).join('')
+    :`<p class="no-gi">No GI tag registered yet</p>`;
+  document.getElementById('dcard').innerHTML=`
     <div class="d-badge">${d.region}</div>
     <div class="d-name">${d.name}</div>
     <div class="d-sec">
@@ -539,56 +391,116 @@ function renderCard(id){
       <h3>State-wide GI Heritage</h3>
       <div class="gi-stack">${STATE_GI.map(g=>`<div class="gi-pill s"><span class="gn">${g.n}</span><span class="gy">${g.y}</span></div>`).join('')}</div>
     </div>`;
-
-  document.getElementById('ph').style.display = 'none';
-  const c = document.getElementById('dcard');
-  c.classList.remove('on');
-  void c.offsetWidth;
-  c.classList.add('on');
+  document.getElementById('ph').style.display='none';
+  const c=document.getElementById('dcard');
+  c.classList.remove('on'); void c.offsetWidth; c.classList.add('on');
 }
 
-/* ── SELECT ──────────────────────────────────── */
+/* ── RESPONSIVE IMAGE MAP ────────────── */
+const ORIG_W=960, ORIG_H=1449;
+const img=document.getElementById('mapImg');
+const canvas=document.getElementById('hl-canvas');
+const ctx=canvas.getContext('2d');
+const tooltip=document.getElementById('tooltip');
+
+// Store original coords
+const ORIG_POLYS={};
+document.querySelectorAll('#wbmap area').forEach(a=>{
+  const pts=a.getAttribute('coords').replace(/\s+/g,' ').trim().split(/[\s,]+/).map(Number);
+  const pairs=[];
+  for(let i=0;i<pts.length;i+=2) pairs.push([pts[i],pts[i+1]]);
+  ORIG_POLYS[a.dataset.id]=pairs;
+});
+
+function getScale(){
+  return img.getBoundingClientRect().width/ORIG_W;
+}
+function resizeMap(){
+  const sc=getScale();
+  document.querySelectorAll('#wbmap area').forEach(a=>{
+    const pts=ORIG_POLYS[a.dataset.id];
+    a.setAttribute('coords',pts.map(([x,y])=>`${Math.round(x*sc)},${Math.round(y*sc)}`).join(','));
+  });
+  const r=img.getBoundingClientRect();
+  canvas.width=r.width; canvas.height=r.height;
+  if(currentId) drawHighlight(currentId);
+}
+
+let resizeTimer;
+window.addEventListener('resize',()=>{clearTimeout(resizeTimer);resizeTimer=setTimeout(resizeMap,80)});
+img.addEventListener('load',resizeMap);
+if(img.complete) setTimeout(resizeMap,50);
+
+/* ── CANVAS HIGHLIGHT ────────────────── */
+let currentId=null;
+function drawHighlight(id){
+  const r=img.getBoundingClientRect();
+  canvas.width=r.width; canvas.height=r.height;
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  if(!id||!ORIG_POLYS[id])return;
+  const sc=getScale();
+  const pts=ORIG_POLYS[id];
+  ctx.beginPath();
+  ctx.moveTo(pts[0][0]*sc,pts[0][1]*sc);
+  for(let i=1;i<pts.length;i++) ctx.lineTo(pts[i][0]*sc,pts[i][1]*sc);
+  ctx.closePath();
+  ctx.fillStyle='rgba(200,130,26,0.30)';
+  ctx.strokeStyle='rgba(155,58,26,0.90)';
+  ctx.lineWidth=2.5;
+  ctx.fill();
+  ctx.stroke();
+}
+
+/* ── SELECT ──────────────────────────── */
 function select(id){
-  // map highlight
-  document.querySelectorAll('#wb-map .district').forEach(e=>e.classList.remove('active'));
-  const poly = document.querySelector(`#wb-map [data-id="${id}"]`);
-  if(poly) poly.classList.add('active');
-
-  // table highlight
-  document.querySelectorAll('#tbody tr').forEach(r=>r.classList.remove('on'));
-  const row = document.querySelector(`#tbody tr[data-id="${id}"]`);
-  if(row){ row.classList.add('on'); row.scrollIntoView({behavior:'smooth',block:'nearest'}); }
-
+  currentId=id;
+  drawHighlight(id);
   renderCard(id);
-
-  // mobile: scroll panel into view
-  if(window.innerWidth<=820){
+  document.querySelectorAll('#tbody tr').forEach(r=>r.classList.remove('on'));
+  const row=document.querySelector(`#tbody tr[data-id="${id}"]`);
+  if(row){row.classList.add('on');row.scrollIntoView({behavior:'smooth',block:'nearest'})}
+  if(window.innerWidth<=780){
     document.getElementById('panel').scrollIntoView({behavior:'smooth',block:'start'});
   }
 }
 
-/* ── MAP CLICKS ──────────────────────────────── */
-document.querySelectorAll('#wb-map .district').forEach(el=>{
-  el.addEventListener('click',()=>select(el.dataset.id));
+/* ── AREA EVENT LISTENERS ────────────── */
+document.querySelectorAll('#wbmap area').forEach(a=>{
+  a.addEventListener('click',e=>{e.preventDefault();select(a.dataset.id)});
+  a.addEventListener('mousemove',e=>{
+    const d=DATA[a.dataset.id];
+    tooltip.textContent=d?d.name:a.alt;
+    tooltip.style.opacity='1';
+    tooltip.style.left=(e.clientX+14)+'px';
+    tooltip.style.top=(e.clientY-10)+'px';
+  });
+  a.addEventListener('mouseleave',()=>{tooltip.style.opacity='0'});
 });
 
-/* ── BUILD TABLE ─────────────────────────────── */
-const tbody = document.getElementById('tbody');
+/* ── BUILD TABLE ─────────────────────── */
+const tbody=document.getElementById('tbody');
 let n=1;
 for(const [id,d] of Object.entries(DATA)){
-  const tr = document.createElement('tr');
-  tr.dataset.id = id;
-  const giStr = d.gi.length ? d.gi.map(g=>`${g.n} (${g.y})`).join(' · ') : '—';
-  tr.innerHTML = `
+  const tr=document.createElement('tr');
+  tr.dataset.id=id;
+  const gs=d.gi.length?d.gi.map(g=>`${g.n} (${g.y})`).join(' · '):'—';
+  tr.innerHTML=`
     <td class="nr">${String(n).padStart(2,'0')}</td>
     <td class="dn">${d.name}</td>
-    <td style="font-family:'DM Mono',monospace;font-size:.68rem;color:#5a4030;white-space:nowrap">${d.region}</td>
+    <td style="font-family:'DM Mono',monospace;font-size:.65rem;color:#5a4030;white-space:nowrap">${d.region}</td>
     <td>${d.hi.slice(0,3).join(', ')}</td>
-    <td class="gc">${giStr}</td>`;
-  tr.addEventListener('click',()=>select(id));
-  tbody.appendChild(tr);
-  n++;
+    <td class="gc">${gs}</td>`;
+  tr.addEventListener('click',()=>{
+    select(id);
+    document.getElementById('mapWrap').scrollIntoView({behavior:'smooth',block:'nearest'});
+  });
+  tbody.appendChild(tr);n++;
 }
+
+const note=document.createElement('p');
+note.style.cssText='font-family:DM Mono,monospace;font-size:.6rem;color:#a08060;margin-top:.75rem;letter-spacing:.06em';
+note.textContent='* Tangail Saree GI tag is jointly held by Purba Bardhaman & Nadia districts.';
+document.querySelector('.tbl-sec').appendChild(note);
 </script>
 </body>
 </html>
